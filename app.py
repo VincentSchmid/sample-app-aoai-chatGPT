@@ -611,6 +611,20 @@ def ensure_storage():
 
 
 def generate_title(conversation_messages):
+    title = None
+    # if message starts with "title: " take next fout words or until new line
+    if conversation_messages[0]['content'].lower().startswith('title: '):
+        title = conversation_messages[0]['content'][7:].split('\n')[0].strip()
+        max_four_words = ' '.join(title.split(' ')[:4])
+        title = max_four_words
+    
+    else:
+        title = summarize_to_title(conversation_messages)
+    
+    return title
+
+
+def summarize_to_title(conversation_messages):
     ## make sure the messages are sorted by _ts descending
     title_prompt = 'Summarize the conversation so far into a 4-word or less title. Do not use any quotation marks or punctuation. Respond with a json object in the format {{"title": string}}. Do not include any other commentary or description.'
 
